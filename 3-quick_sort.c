@@ -1,86 +1,43 @@
-0-bubble_sort.c
 #include "sort.h"
 
-void swap_ints(int *a, int *b);
-int lomuto_partition(int *array, size_t size, int left, int right);
-void lomuto_sort(int *array, size_t size, int left, int right);
-void quick_sort(int *array, size_t size);
-
 /**
- * swap_ints - Swap two integers in an array.
- * @a: The first integer to swap.
- * @b: The second integer to swap.
- */
-void swap_ints(int *a, int *b)
-{
-	int tmp;
-
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
-}
-
-/**
- * lomuto_partition - Order a subset of an array of integers according to
- *                    the lomuto partition scheme (last element as pivot).
- * @array: The array of integers.
- * @size: The size of the array.
- * @left: The starting index of the subset to order.
- * @right: The ending index of the subset to order.
- *
- * Return: The final partition index.
- */
-int lomuto_partition(int *array, size_t size, int left, int right)
-{
-	int *pivot, above, below;
-
-	pivot = array + right;
-	for (above = below = left; below < right; below++)
-	{
-		if (array[below] < *pivot)
-		{
-			if (above < below)
-			{
-				swap_ints(array + below, array + above);
-				print_array(array, size);
-			}
-			above++;
-		}
-	}
-
-	if (array[above] > *pivot)
-	{
-		swap_ints(array + above, pivot);
-		print_array(array, size);
-	}
-
-	return (above);
-}
-
-/**
- * lomuto_sort - Implement the quicksort algorithm through recursion.
+ * lomuto_sort - Implements the quicksort algorithm using recursion.
  * @array: An array of integers to sort.
  * @size: The size of the array.
- * @left: The starting index of the array partition to order.
- * @right: The ending index of the array partition to order.
+ * @low: The lower index of the array portion to order.
+ * @high: The higher index of the array portion to order.
  *
  * Description: Uses the Lomuto partition scheme.
  */
-void lomuto_sort(int *array, size_t size, int left, int right)
+void lomuto_sort(int *array, size_t size, int low, int high)
 {
-	int part;
+        int partition;
 
-	if (right - left > 0)
-	{
-		part = lomuto_partition(array, size, left, right);
-		lomuto_sort(array, size, left, part - 1);
-		lomuto_sort(array, size, part + 1, right);
-	}
+        if (low < high)
+        {
+                partition = lomuto_partition(array, size, low, high);
+                lomuto_sort(array, size, low, partition - 1);
+                lomuto_sort(array, size, partition + 1, high);
+        }
 }
 
 /**
- * quick_sort - Sort an array of integers in ascending
- *              order using the quicksort algorithm.
+ * swap_elements - Swaps two integers in an array.
+ * @a: The first integer to swap.
+ * @b: The second integer to swap.
+ */
+void swap_elements(int *a, int *b)
+{
+	int temp;
+
+	temp = *a;
+	*a = *b;
+	*b = temp;
+}
+
+/**
+ * quick_sort - Sorts an array of integers in ascending order
+ *              using the quicksort algorithm.
  * @array: An array of integers.
  * @size: The size of the array.
  *
@@ -89,8 +46,47 @@ void lomuto_sort(int *array, size_t size, int left, int right)
  */
 void quick_sort(int *array, size_t size)
 {
-	if (array == NULL || size < 2)
-		return;
+        if (array == NULL || size < 2)
+                return;
 
-	lomuto_sort(array, size, 0, size - 1);
+        lomuto_sort(array, size, 0, size - 1);
+}
+
+/**
+ * lomuto_partition - Orders a portion of an array of integers using
+ *                    the Lomuto partition scheme with the last element as the pivot.
+ * @array: The array of integers.
+ * @size: The size of the array.
+ * @low: The lower index of the portion to order.
+ * @high: The higher index of the portion to order.
+ *
+ * Return: The final partition index.
+ */
+int lomuto_partition(int *array, size_t size, int low, int high)
+{
+	int *pivot, i, j;
+
+	pivot = array + high;
+	i = low - 1;
+
+	while (1)
+	{
+		for (j = low; j <= high - 1 && array[j] < *pivot; j++)
+			;
+
+		for (; j <= high - 1 && array[j] > *pivot; j++)
+			;
+
+		if (j >= high)
+			break;
+
+		swap_elements(array + i + 1, array + j);
+		print_array(array, size);
+		i++;
+	}
+
+	swap_elements(array + i + 1, pivot);
+	print_array(array, size);
+
+	return i + 1;
 }

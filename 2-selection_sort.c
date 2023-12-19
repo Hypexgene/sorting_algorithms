@@ -1,22 +1,21 @@
-0-bubble_sort.c
 #include "sort.h"
 
 /**
- * swap_ints - Swap two integers in an array.
- * @a: The first integer to swap.
- * @b: The second integer to swap.
+ * swap_elements - Swaps two integers in an array.
+ * @elem1: The first integer to swap.
+ * @elem2: The second integer to swap.
  */
-void swap_ints(int *a, int *b)
+void swap_elements(int *elem1, int *elem2)
 {
-	int tmp;
+	int temp;
 
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
+	temp = *elem1;
+	*elem1 = *elem2;
+	*elem2 = temp;
 }
 
 /**
- * selection_sort - Sort an array of integers in ascending order
+ * selection_sort - Sorts an array of integers in ascending order
  *                  using the selection sort algorithm.
  * @array: An array of integers.
  * @size: The size of the array.
@@ -25,22 +24,29 @@ void swap_ints(int *a, int *b)
  */
 void selection_sort(int *array, size_t size)
 {
-	int *min;
-	size_t i, j;
+	int *minimum;
+	size_t i = 0, j;
 
 	if (array == NULL || size < 2)
 		return;
 
-	for (i = 0; i < size - 1; i++)
+	while (i < size - 1)
 	{
-		min = array + i;
-		for (j = i + 1; j < size; j++)
-			min = (array[j] < *min) ? (array + j) : min;
+		minimum = array + i;
+		j = i + 1;
 
-		if ((array + i) != min)
+		while (j < size)
 		{
-			swap_ints(array + i, min);
+			minimum = (array[j] < *minimum) ? (array + j) : minimum;
+			j++;
+		}
+
+		if ((array + i) != minimum)
+		{
+			swap_elements(array + i, minimum);
 			print_array(array, size);
 		}
+
+		i++;
 	}
 }
